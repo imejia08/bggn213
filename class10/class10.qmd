@@ -1,5 +1,5 @@
 ---
-title: "class10"
+title: "Class 10: Halloween Candy"
 format: pdf
 date: 10/28/22
 ---
