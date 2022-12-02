@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Isabel Mejia">
+<meta name="dcterms.date" content="2022-10-14">
+
+<title>Class06: Calculating Overall Grades</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="class06_files/libs/clipboard/clipboard.min.js"></script>
+<script src="class06_files/libs/quarto-html/quarto.js"></script>
+<script src="class06_files/libs/quarto-html/popper.min.js"></script>
+<script src="class06_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="class06_files/libs/quarto-html/anchor.min.js"></script>
+<link href="class06_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="class06_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="class06_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="class06_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="class06_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#function-basics" id="toc-function-basics" class="nav-link active" data-scroll-target="#function-basics">Function Basics</a></li>
+  <li><a href="#example-input-vectors-to-work-with" id="toc-example-input-vectors-to-work-with" class="nav-link" data-scroll-target="#example-input-vectors-to-work-with">Example input vectors to work with</a>
+  <ul class="collapse">
+  <li><a href="#q1.-write-a-function-grade-to-determine-an-overall-grade-from-a-vector-of-student-homework-assignment-scores-dropping-the-lowest-single-score.-now-i-can-make-my-function---grade" id="toc-q1.-write-a-function-grade-to-determine-an-overall-grade-from-a-vector-of-student-homework-assignment-scores-dropping-the-lowest-single-score.-now-i-can-make-my-function---grade" class="nav-link" data-scroll-target="#q1.-write-a-function-grade-to-determine-an-overall-grade-from-a-vector-of-student-homework-assignment-scores-dropping-the-lowest-single-score.-now-i-can-make-my-function---grade">Q1. Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowest single score. Now I can make my function -&gt; <code>grade()</code></a></li>
+  </ul></li>
+  <li><a href="#grading-the-whole-class" id="toc-grading-the-whole-class" class="nav-link" data-scroll-target="#grading-the-whole-class">Grading the Whole Class</a>
+  <ul class="collapse">
+  <li><a href="#loading-the-data-frame-data-for-student-grades" id="toc-loading-the-data-frame-data-for-student-grades" class="nav-link" data-scroll-target="#loading-the-data-frame-data-for-student-grades">Loading the data frame data for student grades</a></li>
+  <li><a href="#q2.-using-your-grade-function-and-the-supplied-gradebook-who-is-the-top-scoring-student-overall-in-the-gradebook-3pts" id="toc-q2.-using-your-grade-function-and-the-supplied-gradebook-who-is-the-top-scoring-student-overall-in-the-gradebook-3pts" class="nav-link" data-scroll-target="#q2.-using-your-grade-function-and-the-supplied-gradebook-who-is-the-top-scoring-student-overall-in-the-gradebook-3pts">Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook? [3pts]</a></li>
+  <li><a href="#q3.-from-your-analysis-of-the-gradebook-which-homework-was-toughest-on-students-i.e.-obtained-the-lowest-scores-overall-2pts" id="toc-q3.-from-your-analysis-of-the-gradebook-which-homework-was-toughest-on-students-i.e.-obtained-the-lowest-scores-overall-2pts" class="nav-link" data-scroll-target="#q3.-from-your-analysis-of-the-gradebook-which-homework-was-toughest-on-students-i.e.-obtained-the-lowest-scores-overall-2pts">Q3. From your analysis of the gradebook, which homework was toughest on students (i.e.&nbsp;obtained the lowest scores overall? [2pts]</a></li>
+  <li><a href="#q4.-optional-extension-from-your-analysis-of-the-gradebook-which-homework-was-most-predictive-of-overall-score-i.e.-highest-correlation-with-average-grade-score-1pt" id="toc-q4.-optional-extension-from-your-analysis-of-the-gradebook-which-homework-was-most-predictive-of-overall-score-i.e.-highest-correlation-with-average-grade-score-1pt" class="nav-link" data-scroll-target="#q4.-optional-extension-from-your-analysis-of-the-gradebook-which-homework-was-most-predictive-of-overall-score-i.e.-highest-correlation-with-average-grade-score-1pt">Q4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e.&nbsp;highest correlation with average grade score)? [1pt]</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Class06: Calculating Overall Grades</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Isabel Mejia </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 14, 2022</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="function-basics" class="level1">
+<h1>Function Basics</h1>
+<p>All functions in R have at least 3 things</p>
+<ul>
+<li>A <strong>name</strong> (we pick this)</li>
+<li>Input <strong>arguments</strong> (there can be loads, comma seperated)</li>
+<li>A <strong>body</strong></li>
+</ul>
+</section>
+<section id="example-input-vectors-to-work-with" class="level1">
+<h1>Example input vectors to work with</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example input vectors to start with</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>student1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">90</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>student2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="cn">NA</span>, <span class="dv">90</span>, <span class="dv">90</span>, <span class="dv">90</span>, <span class="dv">90</span>, <span class="dv">97</span>, <span class="dv">80</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>student3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I can use the `mean()’ function to get the average</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(student1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 98.75</code></pre>
+</div>
+</div>
+<p>I can find the lowest value using the <code>min()</code> function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(student1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 90</code></pre>
+</div>
+</div>
+<p>Try using the `which.min()’ function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which.min</span>(student1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+</div>
+<p>Can we use the minus index trick?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>student1[<span class="sc">-</span><span class="dv">8</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100 100 100 100 100 100 100</code></pre>
+</div>
+</div>
+<p>Sure can:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>student1[<span class="sc">-</span> <span class="fu">which.min</span>(student1)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100 100 100 100 100 100 100</code></pre>
+</div>
+</div>
+<p>Combining all the functions together</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(student1[<span class="sc">-</span> <span class="fu">which.min</span>(student1)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100</code></pre>
+</div>
+</div>
+<p>Try for student 2</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(student2[<span class="sc">-</span> <span class="fu">which.min</span>(student2)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>Should we exclude NA?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(student3, <span class="at">na.rm=</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 90</code></pre>
+</div>
+</div>
+<p>We need another way of replacing NA with 0.</p>
+<div class="cell">
+
+</div>
+<p>Combining the function together</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(student2) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(student2[<span class="sc">-</span> <span class="fu">which.min</span>(student2)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>Rewrite my snippet to be more simple</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> student2</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>x[ <span class="fu">is.na</span>(x)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x[<span class="sc">-</span> <span class="fu">which.min</span>(x)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 91</code></pre>
+</div>
+</div>
+<section id="q1.-write-a-function-grade-to-determine-an-overall-grade-from-a-vector-of-student-homework-assignment-scores-dropping-the-lowest-single-score.-now-i-can-make-my-function---grade" class="level2">
+<h2 class="anchored" data-anchor-id="q1.-write-a-function-grade-to-determine-an-overall-grade-from-a-vector-of-student-homework-assignment-scores-dropping-the-lowest-single-score.-now-i-can-make-my-function---grade">Q1. Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowest single score. Now I can make my function -&gt; <code>grade()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>grade <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a> x[ <span class="fu">is.na</span>(x)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">mean</span>(x[<span class="sc">-</span> <span class="fu">which.min</span>(x)])</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now use that to grade student2 etc.(remember to run a function so it comes up in your environment)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grade</span>(student2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 91</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="grading-the-whole-class" class="level1">
+<h1>Grading the Whole Class</h1>
+<section id="loading-the-data-frame-data-for-student-grades" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-data-frame-data-for-student-grades">Loading the data frame data for student grades</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://tinyurl.com/gradeinput"</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>student_grades <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url, <span class="at">row.names =</span><span class="dv">1</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(student_grades)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          hw1 hw2 hw3 hw4 hw5
+student-1 100  73 100  88  79
+student-2  85  64  78  89  78
+student-3  83  69  77 100  77
+student-4  88  NA  73 100  76
+student-5  88 100  75  86  79
+student-6  89  78 100  89  77</code></pre>
+</div>
+</div>
+<p>Now I want to use the <code>apply()</code> function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">apply</span>(student_grades, <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> grade)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> student-1  student-2  student-3  student-4  student-5  student-6  student-7 
+     91.75      82.50      84.25      84.25      88.25      89.00      94.00 
+ student-8  student-9 student-10 student-11 student-12 student-13 student-14 
+     93.75      87.75      79.00      86.00      91.75      92.25      87.75 
+student-15 student-16 student-17 student-18 student-19 student-20 
+     78.75      89.50      88.00      94.50      82.75      82.75 </code></pre>
+</div>
+</div>
+</section>
+<section id="q2.-using-your-grade-function-and-the-supplied-gradebook-who-is-the-top-scoring-student-overall-in-the-gradebook-3pts" class="level2">
+<h2 class="anchored" data-anchor-id="q2.-using-your-grade-function-and-the-supplied-gradebook-who-is-the-top-scoring-student-overall-in-the-gradebook-3pts">Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook? [3pts]</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which.max</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>student-18 
+        18 </code></pre>
+</div>
+</div>
+<p>student-18 was the top scoring student</p>
+</section>
+<section id="q3.-from-your-analysis-of-the-gradebook-which-homework-was-toughest-on-students-i.e.-obtained-the-lowest-scores-overall-2pts" class="level2">
+<h2 class="anchored" data-anchor-id="q3.-from-your-analysis-of-the-gradebook-which-homework-was-toughest-on-students-i.e.-obtained-the-lowest-scores-overall-2pts">Q3. From your analysis of the gradebook, which homework was toughest on students (i.e.&nbsp;obtained the lowest scores overall? [2pts]</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>hw_results <span class="ot">&lt;-</span> <span class="fu">apply</span>(student_grades, <span class="at">MARGIN =</span> <span class="dv">2</span>, <span class="at">FUN =</span> grade)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>hw_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     hw1      hw2      hw3      hw4      hw5 
+89.36842 76.63158 81.21053 89.63158 83.42105 </code></pre>
+</div>
+</div>
+<p>Finding the hw with the lowest average</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which.min</span>(hw_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>hw2 
+  2 </code></pre>
+</div>
+</div>
+<p>hw2 was the hardest assignment.</p>
+</section>
+<section id="q4.-optional-extension-from-your-analysis-of-the-gradebook-which-homework-was-most-predictive-of-overall-score-i.e.-highest-correlation-with-average-grade-score-1pt" class="level2">
+<h2 class="anchored" data-anchor-id="q4.-optional-extension-from-your-analysis-of-the-gradebook-which-homework-was-most-predictive-of-overall-score-i.e.-highest-correlation-with-average-grade-score-1pt">Q4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e.&nbsp;highest correlation with average grade score)? [1pt]</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>mask <span class="ot">&lt;-</span> student_grades</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>mask[ <span class="fu">is.na</span>(mask) ] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(mask<span class="sc">$</span>hw5, results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6325982</code></pre>
+</div>
+</div>
+<p>Can I apply the <code>cor()</code> function over the mask gradebook?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>hw_correlation <span class="ot">&lt;-</span> <span class="fu">apply</span>(mask, <span class="dv">2</span>, cor, <span class="at">y=</span>results)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>hw_correlation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      hw1       hw2       hw3       hw4       hw5 
+0.4250204 0.1767780 0.3042561 0.3810884 0.6325982 </code></pre>
+</div>
+</div>
+<p>Finding the hw with the highest correlation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which.max</span>(hw_correlation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>hw5 
+  5 </code></pre>
+</div>
+</div>
+<p>hw5 was the most predictive of overall score.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

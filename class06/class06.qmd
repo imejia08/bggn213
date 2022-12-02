@@ -1,0 +1,164 @@
+---
+title: "Class06: Calculating Overall Grades"
+author: "Isabel Mejia"
+format: html
+date: 2022-10-14
+toc: true
+theme: quartz 
+---
+
+# Function Basics
+
+All functions in R have at least 3 things
+
+- A **name** (we pick this)
+- Input **arguments** (there can be loads, comma seperated)
+- A **body**
+
+# Example input vectors to work with
+
+```{r}
+# Example input vectors to start with
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+```
+
+I can use the `mean()' function to get the average
+
+```{r}
+mean(student1)
+```
+
+I can find the lowest value using the `min()` function 
+
+```{r}
+min(student1)
+```
+
+Try using the `which.min()' function
+
+```{r}
+which.min(student1)
+```
+
+Can we use the minus index trick?
+
+```{r}
+student1[-8]
+```
+
+Sure can:
+
+```{r}
+student1[- which.min(student1)]
+```
+
+Combining all the functions together
+
+```{r}
+mean(student1[- which.min(student1)])
+```
+Try for student 2
+```{r}
+mean(student2[- which.min(student2)])
+```
+
+Should we exclude NA? 
+```{r}
+mean(student3, na.rm= TRUE)
+```
+We need another way of replacing NA with 0.
+
+```{r}
+
+
+```
+
+Combining the function together
+
+```{r}
+is.na(student2) <- 0
+mean(student2[- which.min(student2)])
+```
+
+Rewrite my snippet to be more simple
+
+```{r}
+x <- student2
+x[ is.na(x)] <- 0
+mean(x[- which.min(x)])
+```
+
+## Q1. Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowest single score. Now I can make my function -> `grade()`
+```{r}
+grade <- function(x) {
+ x[ is.na(x)] <- 0
+ mean(x[- which.min(x)])
+}
+```
+
+Now use that to grade student2 etc.(remember to run a function so it comes up in your environment)
+```{r}
+grade(student2)
+
+```
+# Grading the Whole Class
+
+## Loading the data frame data for student grades 
+
+```{r}
+url <- "https://tinyurl.com/gradeinput"
+student_grades <- read.csv(url, row.names =1)
+head(student_grades)
+
+```
+
+Now I want to use the `apply()` function
+
+```{r}
+results <- apply(student_grades, MARGIN = 1, FUN = grade)
+results
+```
+
+## Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook? [3pts]
+```{r}
+which.max(results)
+```
+ `r names(which.max(results))` was the top scoring student
+ 
+## Q3. From your analysis of the gradebook, which homework was toughest on students (i.e. obtained the lowest scores overall? [2pts]
+
+```{r}
+hw_results <- apply(student_grades, MARGIN = 2, FUN = grade)
+hw_results
+```
+Finding the hw with the lowest average
+
+```{r}
+which.min(hw_results)
+```
+ 
+`r names(which.min(hw_results))` was the hardest assignment. 
+
+## Q4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e. highest correlation with average grade score)? [1pt]
+
+```{r}
+mask <- student_grades
+mask[ is.na(mask) ] <- 0
+cor(mask$hw5, results)
+
+```
+
+Can I apply the `cor()` function over the mask gradebook?
+
+```{r}
+hw_correlation <- apply(mask, 2, cor, y=results)
+hw_correlation
+```
+
+Finding the hw with the highest correlation.
+```{r}
+which.max(hw_correlation)
+```
+`r names(which.max(hw_correlation))` was the most predictive of overall score.
