@@ -1,0 +1,243 @@
+---
+title: "Class 05: Data Visualization with GGPLOT"
+author: "Isabel Mejia"
+format: pdf
+toc: true
+---
+
+# Our first plot
+
+R has base graphics 
+
+```{r}
+head(cars)
+
+plot(cars)
+```
+
+How would I plot this with `ggplot2`?
+
+We need to install and load ggplot2
+To install any package in R we use the `install.packages()` function.
+
+
+
+```{r}
+# install.packages("ggplot2")
+```
+
+Before I can use this package, I need to load it with a `library()` function
+
+```{r}
+library(ggplot2)
+ggplot(cars)
+```
+
+Every ggplot needs at least 3 layers:
+
+- **Data** (i.e. the data.frame we have),
+- **Aes** (aesthetic mapping of our data to what we want to plot),
+- **Geoms** (how we want to plot this stuff)
+
+```{r}
+ggplot(data=cars) +
+  aes(x=speed, y=dist) +
+  geom_point()
+```
+
+Add another geom
+
+```{r}
+ggplot(data=cars) +
+  aes(x=speed, y=dist) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+# Drug Gene Regulation Table
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+
+```
+
+How many genes are in this dataset?
+
+```{r}
+nrow(genes)
+```
+
+There are `r nrow(genes)` genes in this dataset.
+
+How many columns are there and what are the names?
+
+```{r}
+colnames(genes)
+ncol(genes)
+```
+
+There are `r ncol(genes)` columns in this dataset. 
+
+The names of the columns are:
+`r colnames(genes)`
+
+How many genes are upregulated?
+
+```{r}
+state_tabulation <- data.frame(table(genes$State))
+state_tabulation
+state_tabulation[3,2]
+```
+There are `r state_tabulation[3,2]` genes that go up.
+
+Plotting the genes with colors
+```{r}
+ggplot(data= genes)+
+  aes(x = Condition1, y = Condition2, col=State)+
+  geom_point()
+ 
+
+```
+Changing the genes colors to custom+adding labels
+
+```{r}
+gene_plot <- ggplot(data= genes)+
+  aes(x = Condition1, y = Condition2, col=State)+
+  geom_point()+
+  labs(title = "Gene Expression Changes Upon Drug Treatment",
+       x = "Control(no drug)", y = "Drug Treatment")
+gene_plot + scale_color_manual(values = c("red", "gray", "blue"))
+
+```
+
+# Going further..
+
+Download gapminder dataset. 
+```{r}
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+```
+
+Install the dplyr package and filter data to contain only 2007 
+
+```{r}
+#install.packages("dplyr")
+library(dplyr)
+gapminder_2007 <- gapminder %>% filter (year==2007)
+```
+
+Adding colors to match contintent and change points to reflect sizes
+```{r}
+library(ggplot2)
+
+ggplot(data=gapminder_2007) +
+  aes( x= gdpPercap, y = lifeExp, color = continent, size= pop) +
+  geom_point(alpha=0.5)
+  
+```
+
+Changing color to reflect population
+```{r}
+ggplot(data=gapminder_2007) +
+  aes( x= gdpPercap, y = lifeExp, color = pop) +
+  geom_point(alpha=0.8)
+```
+
+Changing size to reflect population
+```{r}
+ggplot(data=gapminder_2007) +
+  aes( x= gdpPercap, y = lifeExp,size= pop) +
+  geom_point(alpha=0.5)
+```
+
+Changing size to reflect actual population size and rendering with color matching continents
+```{r}
+ggplot(data=gapminder_2007) +
+  aes( x= gdpPercap, y = lifeExp, color = continent, size= pop) +
+  geom_point(alpha=0.5)+
+  scale_size_area(max_size=10)
+```
+
+Graphing the 1957 data
+
+```{r}
+library(dplyr)
+gapminder_1957 <- gapminder %>% filter (year==1957)
+library(ggplot2)
+ggplot(data=gapminder_1957)+
+  aes(x = gdpPercap, y = lifeExp, color=continent, size=pop)+
+  geom_point(alpha=0.7)+
+  scale_size_area(max_size = 15)
+```
+
+Combining the 1957 and 2007 data into one plot
+
+```{r}
+gapminder_data <- gapminder %>% filter (year==1957 | year==2007)
+
+library(ggplot2)
+ggplot(data=gapminder_data)+
+  aes(x = gdpPercap, y = lifeExp, color=continent, size=pop)+
+  geom_point(alpha=0.7)+
+  scale_size_area(max_size = 15)+
+  facet_wrap(~year)
+```
+
+# Bar Charts
+
+Looking at data for the 5 biggest countries
+```{r}
+gapminder_top5 <- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(pop)) %>% 
+  top_n(5, pop)
+
+gapminder_top5
+```
+Creating a simple bar chart of the previous data
+
+```{r}
+ggplot(gapminder_top5)+
+  geom_col(aes(x= country, y= pop))
+```
+
+Creating bar chart for life expectancy in the 5 biggest countries
+```{r}
+ggplot(gapminder_top5)+
+  geom_col(aes(x= country, y= lifeExp))
+```
+
+Playing with colors :)
+
+```{r}
+library(ggplot2)
+ggplot(gapminder_top5)+ geom_col(aes(x= country, y = pop, fill = continent))
+```
+
+Using a numeric value to color 
+```{r}
+ggplot(gapminder_top5)+ geom_col(aes(x= country, y = pop, fill = lifeExp))
+```
+
+Plotting the population size by country 
+```{r}
+ggplot(gapminder_top5)+geom_col(aes(x= country, y=pop, fill=gdpPercap))
+```
+
+Reordering the bars
+```{r}
+ggplot(gapminder_top5)+
+  aes(x=reorder(country, -pop), y=pop, fill=gdpPercap)+
+  geom_col()
+```
+
+Fill by country
+```{r}
+ggplot(gapminder_top5)+
+  aes(x=reorder(country, -pop), y=pop, fill=country)+
+  geom_col()
+```
+
