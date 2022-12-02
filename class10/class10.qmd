@@ -1,6 +1,6 @@
 ---
 title: "Class 10: Halloween Candy"
-format: pdf
+format: gfm
 date: 10/28/22
 ---
 
