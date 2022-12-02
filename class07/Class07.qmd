@@ -1,0 +1,169 @@
+---
+title: "Class 07: Machine Learning 1"
+author: "Isabel Mejia"
+format: pdf
+---
+
+# K-means clustering 
+
+Let's make up some data to cluster.
+
+```{r}
+tmp <- c(rnorm(30, -3), rnorm(30, 3))
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+```
+
+
+The function to do k-means clustering in base R is called `kmeans()`. We give this our input data for clustering and the number of clusters we want `centers`.
+
+
+```{r}
+km <- kmeans(x, centers=4, nstart=20)
+km
+```
+
+Cluster size
+```{r}
+km$size
+```
+
+Cluster assignment/membership
+
+```{r}
+km$cluster
+```
+
+Cluster center
+
+```{r}
+km$centers
+```
+
+```{r}
+plot(x, col=km$cluster)
+points(km$centers, col="blue", pch=17, cex=1.5)
+```
+
+Heirarchial CLustering
+
+The `hclust()` function performs hierarchical clustering. The big advantage here is I don't need to tell it "k" the number of clusters 
+
+To run `hclust()` I need to provide a distance matrix as input (not the original data)
+
+```{r}
+hc <- hclust( dist(x) )
+hc
+```
+
+```{r}
+plot(hc)
+```
+
+Function to "cut" the tree to get the main result (which is cluster membership).
+Put branches into groups
+
+```{r}
+cutree(hc, h=8 )
+```
+
+More often we will use `cutree()` with k=2 for example
+
+```{r}
+grps <- cutree(hc, k=2)
+```
+
+```{r}
+plot(x, col=grps)
+```
+
+# Principal Component Analysis (PCA)
+
+Read data for UK food trends from online
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url)
+```
+
+## Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+
+```{r}
+dim(x)
+```
+There are 17 rows and 5 columns
+
+Check the data:
+```{r}
+head(x)
+```
+Fixing the row names
+
+```{r}
+#rownames(x) <- x[,1]
+#x <- x[,-1]
+#head(x)
+```
+
+
+Alternative way of changing the row names
+
+```{r}
+x <- read.csv(url, row.names=1)
+head(x)
+```
+Checking to make sure the rows and columns have changed
+
+```{r}
+dim(x)
+```
+
+## Q2. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+
+I prefer the method in which you specify the row.names in the in the `read.csv()` function because it's much simpler to specify that the first column is the name. This approach seems to be more robust because if you rerun the code of the first approach then data could be deleted.
+
+Spotting major differences and trends.
+
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+```
+
+Q3: Changing what optional argument in the above barplot() function results in the following plot?
+
+
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+Changing the beside argument to "F" will stack the barplots
+
+## Q5: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+
+A pairs plot is somewhat useful.  
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+In this plot it is all possible pairwise plots. if a given point lies on the diagonal for a given plot, that means the numbers between the two countries are similar, if not the same.
+
+## PCA to the rescue
+
+The main function in base R to do PCA is called `prcomp()`. One issue with the `prcomp()` function is that it expect the transpose of our data as input.
+
+```{r}
+pca <- prcomp( t(x))
+summary(pca)
+```
+
+The object returned by `prcomp()` has our results that include a $x component
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", 
+     col=c("orange", "red", "blue", "darkgreen"), text(pca$x[,1], pca$x[,2], colnames(x), col=c("orange", "red", "blue", "darkgreen")))
+
+```
+
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot (pca$rotation[,1], las=2)
+```
+
